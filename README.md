@@ -39,12 +39,16 @@ The YAML format is:
 
 ```yaml
 joints:
-  - name: base
-    motor_id: 11
-    min_degrees: 90.0
-    max_degrees: 270.0
-    home_degrees: 180.0
+  - name: gripper
+    motor_id: 16
+    min_degrees: 170.0
+    max_degrees: 250.0
+    home_degrees: 170.0
+    open_degrees: 250.0
+    close_degrees: 170.0
 ```
+
+Any extra `*_degrees` keys become named movement targets for examples, so the gripper example uses `open` and `close` instead of `min` and `max`.
 
 Open the example files and edit the `build_arm(...)` call if you need to change the serial port, baudrate, timeout, controller class, or joint config path.
 You can also set `OMX_SERIAL_PORT` instead of passing `--serial-port` every time.

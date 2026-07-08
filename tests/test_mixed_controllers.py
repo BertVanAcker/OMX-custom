@@ -72,6 +72,11 @@ class MixedControllerTests(unittest.TestCase):
             [("home", 180.0), ("max", 260.0), ("min", 100.0)],
         )
 
+        self.assertEqual(
+            resolve_yaml_steps(arm, "gripper", ["open", "close", "open"]),
+            [("open", 250.0), ("close", 170.0), ("open", 250.0)],
+        )
+
     def test_arm_uses_controller_configured_for_selected_joint(self) -> None:
         xl430 = FakeController()
         xl330 = FakeController()

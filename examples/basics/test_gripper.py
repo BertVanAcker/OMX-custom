@@ -12,7 +12,7 @@ from _shared import run_example  # noqa: E402
 def main() -> int:
     return run_example(
         "gripper",
-        ["home", "min", "home"],
+        ["open", "close", "open"],
     )
 
 

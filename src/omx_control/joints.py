@@ -87,13 +87,21 @@ def _joint_from_config(entry: dict[str, Any]) -> JointSpec:
     except KeyError as exc:
         raise ValueError(f"Missing required joint config key: {exc.args[0]}") from exc
 
+    named_positions = {
+        key.removesuffix("_degrees"): float(value)
+        for key, value in entry.items()
+        if key.endswith("_degrees") and key not in {"min_degrees", "max_degrees", "home_degrees"}
+    }
+
     joint = JointSpec(
         name=name,
         motor_id=motor_id,
         angle_range=AngleRange(min_degrees, max_degrees),
         home_degrees=home_degrees,
+        named_positions=named_positions,
     )
     joint.validate_home()
+    joint.validate_named_positions()
     return joint
 
 

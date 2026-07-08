@@ -1,9 +1,11 @@
 joints:
   - name: gripper
     motor_id: 16
-    min_degrees: 180.0
+    min_degrees: 170.0
     max_degrees: 250.0
-    home_degrees: 250.0
+    home_degrees: 170.0
+    open_degrees: 250.0
+    close_degrees: 170.0
   - name: base
     motor_id: 11
     min_degrees: 90.0
@@ -12,12 +14,12 @@ joints:
   - name: joint1
     motor_id: 12
     min_degrees: 78.0
-    max_degrees: 260.0
+    max_degrees: 250.0
     home_degrees: 78.0
   - name: joint2
     motor_id: 13
     min_degrees: 278.0
-    max_degrees: 90.0
+    max_degrees: 110.0
     home_degrees: 278.0
   - name: joint3
     motor_id: 14

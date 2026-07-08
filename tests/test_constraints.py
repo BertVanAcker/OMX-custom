@@ -41,6 +41,13 @@ class JointSpecTests(unittest.TestCase):
         self.assertEqual(BASE.angle_range.start_degrees, 90.0)
         self.assertEqual(BASE.angle_range.end_degrees, 270.0)
 
+    def test_gripper_named_positions_load_from_yaml(self) -> None:
+        gripper = DEFAULT_JOINTS[0]
+
+        self.assertEqual(gripper.name, "gripper")
+        self.assertEqual(gripper.named_positions["open"], 250.0)
+        self.assertEqual(gripper.named_positions["close"], 170.0)
+
     def test_home_values_are_valid(self) -> None:
         for joint in (BASE, JOINT2, JOINT3, JOINT4):
             joint.validate_home()

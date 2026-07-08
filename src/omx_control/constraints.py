@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from math import isclose, tau
+from typing import Mapping
 
 
 def normalize_degrees(angle_degrees: float) -> float:
@@ -52,6 +53,7 @@ class JointSpec:
     motor_id: int
     angle_range: AngleRange
     home_degrees: float
+    named_positions: Mapping[str, float] = field(default_factory=dict)
 
     def validate(self, angle_degrees: float) -> None:
         if not self.angle_range.contains(angle_degrees):
@@ -62,3 +64,11 @@ class JointSpec:
 
     def validate_home(self) -> None:
         self.validate(self.home_degrees)
+
+    def validate_named_positions(self) -> None:
+        for name, angle_degrees in self.named_positions.items():
+            if not self.angle_range.contains(angle_degrees):
+                raise ValueError(
+                    f"{self.name} named position {name!r} cannot move to {angle_degrees} degrees; "
+                    f"allowed range is {self.angle_range.start_degrees} to {self.angle_range.end_degrees} degrees"
+                )

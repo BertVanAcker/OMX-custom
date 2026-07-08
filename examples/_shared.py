@@ -170,6 +170,7 @@ def resolve_yaml_steps(arm: OMXArm, joint_name: str, step_names: Sequence[str]) 
         "home": joint.home_degrees,
         "min": joint.angle_range.start_degrees,
         "max": joint.angle_range.end_degrees,
+        **joint.named_positions,
     }
 
     steps: list[tuple[str, float]] = []
