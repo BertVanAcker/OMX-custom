@@ -1,0 +1,47 @@
+Metadata-Version: 2.4
+Name: omx-control
+Version: 0.1.0
+Summary: OMX robot arm control helpers built on rustypot
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: rustypot>=1.5.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8; extra == "dev"
+
+# OMX Control
+
+Small Python helpers for the Robotis OMX arm built on top of the Python bindings from rustypot.
+
+The package keeps the robot-specific movement limits in one place and exposes one safe command path per joint.
+
+## Install
+
+```bash
+pip install -e .
+```
+
+## Joint map
+
+| Joint | Motor ID | Safe range | Home |
+| --- | --- | --- | --- |
+| gripper | 16 | 180° to 250° | 250° |
+| base | 11 | 90° to 270° | 180° |
+| joint1 | 12 | 78° to 260° | 78° |
+| joint2 | 13 | 278° to 90° | 278° |
+| joint3 | 14 | 266° to 90° | 266° |
+| joint4 | 15 | 360° to 0° | 178° |
+
+## Example usage
+
+The examples use a controller class from rustypot and move only one joint at a time.
+
+Run them from the repository root:
+
+```bash
+python examples/basics/test_base.py --serial-port /dev/ttyUSB0
+python examples/basics/test_joint1.py --serial-port /dev/ttyUSB0
+```
+
+## Notes
+
+The rustypot Python binding expects goal positions in radians. This package accepts degrees at the OMX layer and converts them before sending commands.

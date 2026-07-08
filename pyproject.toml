@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "omx-control"
+version = "0.1.0"
+description = "OMX robot arm control helpers built on rustypot"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["rustypot>=1.5.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+omx_control = ["config/*.yaml"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
