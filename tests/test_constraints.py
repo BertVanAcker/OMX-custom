@@ -52,6 +52,12 @@ class JointSpecTests(unittest.TestCase):
         for joint in (BASE, JOINT2, JOINT3, JOINT4):
             joint.validate_home()
 
+    def test_joint2_accepts_midrange_manual_position(self) -> None:
+        JOINT2.validate(170.0)
+
+    def test_joint3_accepts_midrange_manual_position(self) -> None:
+        JOINT3.validate(170.0)
+
     def test_validates_invalid_angles(self) -> None:
         with self.assertRaises(ValueError):
             BASE.validate(30.0)

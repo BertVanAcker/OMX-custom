@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import errno
 import os
 from pathlib import Path
 import sys
@@ -15,7 +16,7 @@ if str(SRC) not in sys.path:
 from omx_control import OMXArm, create_lazy_rustypot_controller, load_joint_specs  # noqa: E402
 
 
-DEFAULT_SERIAL_PORT = "/dev/cu.usbmodem11401"
+DEFAULT_SERIAL_PORT = "/dev/cu.usbmodem1401"
 DEFAULT_BAUDRATE = 1_000_000
 DEFAULT_TIMEOUT = 1.0
 XL430_CONTROLLER_CLASS = "Xl430PyController"
@@ -206,11 +207,23 @@ def run_example(joint_name: str, step_names: Sequence[str]) -> int:
         return 2
 
     controller_class = controller_class_by_joint[joint_name]
+
+    def _busy_hint(exc: BaseException) -> str:
+        if isinstance(exc, OSError) and exc.errno in {errno.EBUSY, errno.EACCES, errno.EPERM}:
+            return (
+                f"Error: serial device {args.serial_port} is busy or inaccessible: {exc}. "
+                "Stop the robot-control app/API (npm run dev or robot_control_server/server.py) and retry."
+            )
+        return f"Error: {exc}"
+
     print(f"Using {controller_class} for {joint.name} motor ID {joint.motor_id}")
     if not args.skip_ping:
         try:
             arm.ping_joint(joint_name)
-        except RuntimeError as exc:
+        except (RuntimeError, OSError) as exc:
+            if isinstance(exc, OSError):
+                print(_busy_hint(exc), file=sys.stderr)
+                return 3
             print(
                 f"Error: motor ID {joint.motor_id} did not respond on {args.serial_port} "
                 f"at {args.baudrate} baud within {args.timeout}s using {controller_class}: {exc}",
@@ -223,7 +236,10 @@ def run_example(joint_name: str, step_names: Sequence[str]) -> int:
             configured = arm.configure_joint_position_mode(joint_name)
             if configured is not None:
                 print(f"Configured {joint.name} motor ID {joint.motor_id} for position mode")
-        except RuntimeError as exc:
+        except (RuntimeError, OSError) as exc:
+            if isinstance(exc, OSError):
+                print(_busy_hint(exc), file=sys.stderr)
+                return 3
             print(
                 f"Error: could not configure position mode for motor ID {joint.motor_id} on "
                 f"{args.serial_port} using {controller_class}: {exc}",
@@ -235,7 +251,10 @@ def run_example(joint_name: str, step_names: Sequence[str]) -> int:
         try:
             print(f"Enabling torque for {joint.name} motor ID {joint.motor_id}")
             arm.set_joint_torque(joint_name, True)
-        except RuntimeError as exc:
+        except (RuntimeError, OSError) as exc:
+            if isinstance(exc, OSError):
+                print(_busy_hint(exc), file=sys.stderr)
+                return 3
             print(
                 f"Error: could not enable torque for motor ID {joint.motor_id} on {args.serial_port} "
                 f"using {controller_class}: {exc}",
@@ -251,7 +270,10 @@ def run_example(joint_name: str, step_names: Sequence[str]) -> int:
             settle_seconds=args.settle_seconds,
             retries=args.retries,
         )
-    except RuntimeError as exc:
+    except (RuntimeError, OSError) as exc:
+        if isinstance(exc, OSError):
+            print(_busy_hint(exc), file=sys.stderr)
+            return 3
         print(
             f"Error: {exc}\n"
             f"Port: {args.serial_port}, baudrate: {args.baudrate}, timeout: {args.timeout}s, "

@@ -18,13 +18,13 @@ joints:
     home_degrees: 78.0
   - name: joint2
     motor_id: 13
-    min_degrees: 278.0
-    max_degrees: 110.0
+    min_degrees: 110.0
+    max_degrees: 278.0
     home_degrees: 278.0
   - name: joint3
     motor_id: 14
-    min_degrees: 266.0
-    max_degrees: 90.0
+    min_degrees: 90.0
+    max_degrees: 266.0
     home_degrees: 266.0
   - name: joint4
     motor_id: 15

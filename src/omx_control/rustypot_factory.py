@@ -34,6 +34,12 @@ class LazyRustypotController:
             )
         return self._controller
 
+    def close(self) -> None:
+        close = getattr(self._controller, "close", None)
+        if callable(close):
+            close()
+        self._controller = None
+
     def ping(self, motor_id: int):
         return self._get_controller().ping(motor_id)
 

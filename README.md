@@ -19,8 +19,8 @@ Joint IDs, limits, and home angles are loaded from `src/omx_control/config/joint
 | gripper | 16 | `Xl330PyController` | 180° to 250° | 250° |
 | base | 11 | `Xl430PyController` | 90° to 270° | 180° |
 | joint1 | 12 | `Xl430PyController` | 78° to 260° | 78° |
-| joint2 | 13 | `Xl430PyController` | 278° to 90° | 278° |
-| joint3 | 14 | `Xl330PyController` | 266° to 90° | 266° |
+| joint2 | 13 | `Xl430PyController` | 110° to 278° | 278° |
+| joint3 | 14 | `Xl330PyController` | 90° to 266° | 266° |
 | joint4 | 15 | `Xl330PyController` | 360° to 0° | 178° |
 
 ## Example usage
@@ -30,8 +30,8 @@ The examples select the matching rustypot controller for each joint and move onl
 Run them from the repository root:
 
 ```bash
-.venv/bin/python examples/basics/test_base.py --serial-port /dev/cu.usbmodem11401 --timeout 1.0
-.venv/bin/python examples/basics/test_joint1.py --serial-port /dev/cu.usbmodem11401 --timeout 1.0
+.venv/bin/python examples/basics/test_base.py --serial-port /dev/cu.usbmodem1401 --timeout 1.0
+.venv/bin/python examples/basics/test_joint1.py --serial-port /dev/cu.usbmodem1401 --timeout 1.0
 ```
 
 Pass `--joint-config path/to/joints.yaml` to use different joint angle constraints without editing Python code.
@@ -58,9 +58,24 @@ If a motor times out, check the serial port, power, baudrate, and motor ID. The 
 Diagnostic scripts live in `examples/diagnosis/`, for example:
 
 ```bash
-.venv/bin/python examples/diagnosis/diagnose_xl330.py --serial-port /dev/cu.usbmodem11401
-.venv/bin/python examples/diagnosis/probe_xl330_motion.py --serial-port /dev/cu.usbmodem11401 --id 14 --delta 128
+.venv/bin/python examples/diagnosis/diagnose_xl330.py --serial-port /dev/cu.usbmodem1401
+.venv/bin/python examples/diagnosis/probe_xl330_motion.py --serial-port /dev/cu.usbmodem1401 --id 14 --delta 128
 ```
+
+## React control app
+
+Start the React app and robot API together:
+
+```bash
+cd robot-control
+npm run dev
+```
+
+Open `http://127.0.0.1:5173/`. The launcher starts the API at `http://127.0.0.1:8765/` and the Vite frontend at `http://127.0.0.1:5173/`.
+
+The launcher auto-detects `/dev/cu.usb*` ports. Set `OMX_SERIAL_PORT`, `OMX_API_HOST`, or `OMX_API_PORT` before `npm run dev` to override the defaults.
+
+The app has a manual page for joint and gripper actuation, plus a teaching/playback page. Entering teaching mode releases servo torque before positions are captured.
 
 ## Notes
 
